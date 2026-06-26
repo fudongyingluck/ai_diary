@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日记本小程序 · 交接文档（给 Claude Code）</title>
+<style>
+  :root{
+    --paper:#F2EFE8; --ink:#2B2925; --muted:#8C857A; --line:#DAD4C8;
+    --seal:#A4543B; --sage:#6E7A66; --card:#FBF9F4; --code:#33302a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:-apple-system,"PingFang SC",system-ui,sans-serif;
+    background:#E5E0D6; color:var(--ink); line-height:1.75;
+    padding:0 0 80px;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+  header{
+    background:var(--ink); color:var(--paper); padding:48px 0 40px; margin-bottom:40px;
+  }
+  header .wrap{display:flex; align-items:center; gap:20px;}
+  .seal{font-family:"Songti SC",serif; background:var(--seal); color:#fff;
+    width:56px;height:56px;border-radius:12px;display:grid;place-items:center;
+    font-size:32px;transform:rotate(-3deg);flex-shrink:0;}
+  header h1{font-size:28px; font-weight:600; letter-spacing:1px;}
+  header .sub{font-size:13px; color:#b8b1a2; margin-top:6px; letter-spacing:1px;}
+  .meta-line{font-size:12px;color:#9a9486;margin-top:14px;}
+
+  section{margin-bottom:44px;}
+  h2{font-size:21px; font-weight:600; letter-spacing:1px; padding-bottom:10px;
+    border-bottom:2px solid var(--ink); margin-bottom:20px; display:flex; align-items:baseline; gap:10px;}
+  h2 .no{font-size:13px; color:var(--seal); font-family:"Songti SC",serif;}
+  h3{font-size:16px; font-weight:600; margin:22px 0 10px; color:#3a362f;}
+  p{margin-bottom:12px; font-size:14.5px; color:#3a362f;}
+  ul,ol{margin:8px 0 14px 22px;}
+  li{font-size:14.5px; margin-bottom:7px; color:#3a362f;}
+  strong{color:var(--ink); font-weight:600;}
+  .em{color:var(--seal); font-weight:600;}
+  code{font-family:"SF Mono",Menlo,monospace; font-size:12.5px; background:#E4DECF;
+    padding:1px 6px; border-radius:4px; color:#6b4a3e;}
+  pre{background:var(--code); color:#e8e3d8; padding:18px 20px; border-radius:12px;
+    overflow-x:auto; font-size:12.5px; line-height:1.6; margin:12px 0 18px;
+    font-family:"SF Mono",Menlo,monospace;}
+  pre .c{color:#8a9a7a;} pre .k{color:#d4956b;} pre .s{color:#a8b88f;} pre .n{color:#c99a6b;}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:20px 22px; margin-bottom:16px;}
+  .note{background:#F1E9DC; border-left:3px solid var(--seal); padding:13px 16px;
+    border-radius:0 8px 8px 0; font-size:13.5px; margin:14px 0; color:#5c5247;}
+  .note .t{font-weight:600; color:var(--seal); display:block; margin-bottom:3px; font-size:12px; letter-spacing:1px;}
+  .ok{background:#E8EDE2; border-left-color:var(--sage);}
+  .ok .t{color:var(--sage);}
+
+  table{width:100%; border-collapse:collapse; margin:14px 0 18px; font-size:13.5px;}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line);}
+  th{background:#E9E3D7; font-weight:600; font-size:12.5px; letter-spacing:1px;}
+  td code{font-size:12px;}
+
+  .tag{display:inline-block; font-size:11px; padding:2px 9px; border-radius:20px;
+    background:#EDE7DA; color:#6b655a; border:1px solid var(--line); margin:0 2px;}
+  .tag.done{background:#E8EDE2; color:var(--sage); border-color:#c3d0b8;}
+  .tag.todo{background:#F1E2DC; color:#9d5340; border-color:#e3c8bf;}
+
+  /* ---- embedded phone mockups ---- */
+  .screens{display:flex; flex-wrap:wrap; gap:24px; justify-content:center; margin:24px 0;}
+  .fw{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .fl{font-size:11px;color:#9a9486;letter-spacing:1px;text-align:center;max-width:240px;}
+  .phone{width:248px;height:524px;background:var(--paper);border-radius:30px;overflow:hidden;
+    position:relative;box-shadow:0 14px 36px rgba(40,36,30,.2),0 0 0 7px #1c1a17;
+    display:flex;flex-direction:column;}
+  .sb{height:30px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px;font-size:9px;font-weight:600;flex-shrink:0;color:var(--ink);}
+  .scn{flex:1;overflow:hidden;}
+  .smark{font-family:"Songti SC",serif;color:#fff;background:var(--seal);width:24px;height:24px;
+    border-radius:5px;display:grid;place-items:center;font-size:13px;transform:rotate(-3deg);}
+  .ptop{padding:4px 16px 10px;display:flex;align-items:center;gap:9px;}
+  .ptop h1{font-size:15px;font-weight:600;letter-spacing:.5px;}
+  .ptop .s{font-size:9px;color:var(--muted);margin-top:1px;}
+  .hr{height:1px;background:var(--line);margin:0 16px;}
+  .pchip{font-size:8.5px;padding:2px 7px;border-radius:14px;background:#EDE7DA;color:#6b655a;
+    border:1px solid var(--line);display:inline-block;}
+  .pchip.w{background:#F1E2DC;color:#9d5340;border-color:#e3c8bf;}
+  .pchip.on{background:var(--seal);color:#fff;border-color:var(--seal);}
+  .pchip.ink{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .ptab{position:absolute;left:0;right:0;bottom:0;height:52px;background:rgba(251,249,244,.94);
+    border-top:1px solid var(--line);display:flex;padding-bottom:5px;}
+  .ptab .t{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;color:var(--muted);font-size:8px;}
+  .ptab .t.on{color:var(--ink);}
+  .ptab .t .i{font-size:14px;}
+  .ptab .t.ctr .i{background:var(--seal);color:#fff;width:30px;height:30px;border-radius:50%;
+    display:grid;place-items:center;font-size:16px;margin-top:-13px;box-shadow:0 4px 11px rgba(164,84,59,.35);}
+  /* calendar mini */
+  .mcal{padding:6px 14px;}
+  .mw{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;}
+  .mw span{font-size:8px;color:var(--muted);padding:2px 0;}
+  .md{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+  .md .d{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:9px;border-radius:6px;position:relative;}
+  .md .d.out{color:#cfc9bc;}
+  .md .d.today{background:var(--ink);color:var(--paper);}
+  .md .d .dot{width:3.5px;height:3.5px;border-radius:50%;margin-top:1.5px;}
+  .pbody{padding:8px 16px;}
+  .pbl{font-size:8.5px;color:var(--muted);letter-spacing:1.5px;margin:10px 0 7px;}
+  .pentry{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;}
+  .pentry .mt{display:flex;justify-content:space-between;font-size:9px;font-weight:600;margin-bottom:5px;}
+  .pentry .bd{font-size:9.5px;line-height:1.55;color:#4a463f;}
+  .pentry .tr{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+  /* fragment stream */
+  .strm{position:relative;padding-left:13px;margin-top:4px;}
+  .strm::before{content:"";position:absolute;left:3px;top:4px;bottom:6px;width:1px;background:var(--line);}
+  .frg{position:relative;margin-bottom:11px;}
+  .frg::before{content:"";position:absolute;left:-13px;top:3px;width:6px;height:6px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--muted);}
+  .frg .tm{font-size:8px;color:var(--muted);}
+  .frg .tx{font-size:9.5px;line-height:1.5;color:#4a463f;margin:2px 0 4px;}
+  .frg .tg{display:flex;flex-wrap:wrap;gap:3px;}
+  /* record */
+  .mp{display:flex;justify-content:space-between;margin:6px 0;}
+  .mp b{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+    font-size:14px;display:grid;place-items:center;}
+  .mp b.on{background:var(--ink);border-color:var(--ink);}
+  .pta{width:100%;min-height:48px;border:1px solid var(--line);background:var(--card);border-radius:9px;
+    padding:8px;font-size:9.5px;color:#4a463f;}
+  .ppick{display:flex;flex-wrap:wrap;gap:5px;}
+  .ptb{font-size:9px;padding:5px 9px;border-radius:16px;background:var(--card);border:1px solid var(--line);
+    color:#6b655a;display:flex;align-items:center;gap:3px;}
+  .ptb.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .ptb.seal.on{background:var(--seal);border-color:var(--seal);}
+  .pinp{display:inline-flex;align-items:center;gap:4px;background:#EDE7DA;border-radius:8px;
+    padding:2px 6px;margin-left:4px;font-size:9px;}
+  .pinp input{width:26px;border:none;background:transparent;font-size:9px;text-align:center;color:var(--ink);}
+  /* insight */
+  .pins{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:9px;
+    position:relative;overflow:hidden;}
+  .pins::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2.5px;background:var(--seal);}
+  .pins.calm::before{background:var(--sage);}
+  .pins .ai{font-size:7.5px;letter-spacing:1.5px;color:var(--seal);margin-bottom:5px;display:block;}
+  .pins.calm .ai{color:var(--sage);}
+  .pins .hd{font-size:10.5px;font-weight:600;margin-bottom:4px;line-height:1.4;}
+  .pins .ds{font-size:9px;line-height:1.55;color:#544f47;}
+  .pins .e{color:var(--seal);font-weight:600;} .pins.calm .e{color:var(--sage);}
+  .pfilt{display:flex;gap:5px;overflow-x:auto;padding:2px 0 8px;}
+  .pfilt .f{flex-shrink:0;font-size:9px;padding:4px 10px;border-radius:14px;background:var(--card);
+    border:1px solid var(--line);color:#6b655a;white-space:nowrap;}
+  .pfilt .f.on{background:var(--seal);color:#fff;border-color:var(--seal);}
+  .mstat{display:flex;gap:6px;margin:8px 0;}
+  .mstat .b{flex:1;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px;text-align:center;}
+  .mstat .n{font-size:14px;font-weight:600;color:var(--seal);}
+  .mstat .l{font-size:7px;color:var(--muted);margin-top:1px;letter-spacing:.5px;}
+  /* create-tag form mock */
+  .frm{padding:10px 16px;}
+  .fld{margin-bottom:11px;}
+  .fld .fl2{font-size:8.5px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;}
+  .fld .inp{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:10px;color:var(--ink);}
+  .seg{display:flex;gap:4px;background:#E9E3D7;border-radius:8px;padding:3px;}
+  .seg b{flex:1;text-align:center;font-size:9px;padding:5px;border-radius:6px;color:var(--muted);}
+  .seg b.on{background:var(--paper);color:var(--ink);}
+  .pbtn{background:var(--ink);color:var(--paper);text-align:center;border-radius:18px;padding:9px;
+    font-size:10px;letter-spacing:2px;margin-top:6px;}
+
+  .foot{font-size:12px;color:#9a9486;text-align:center;padding-top:30px;border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="seal">记</div>
+    <div>
+      <h1>日记本小程序 · 产品与技术规格</h1>
+      <div class="sub">微信小程序 · 日常记录 + AI 规律分析</div>
+      <div class="meta-line">交接文档 · 供 Claude Code 实现使用 · v1.0</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- 0 -->
+<section>
+  <h2><span class="no">壹</span>项目概述</h2>
+  <p>一个微信小程序，核心是<strong>记录日常</strong>，并用 <strong>AI 分析这些日常事件的规律</strong>。两类内容混合：自由文字（简短日记）+ 结构化标签（可自定义的常见事项）。结构化标签是 AI 能找出规律的前提——纯文字无法量化，打了标签才能算出"晚睡的日子心情往往更低"这类共现规律。</p>
+  <div class="card">
+    <h3 style="margin-top:0">三个主 Tab</h3>
+    <p style="margin-bottom:0"><strong>时光</strong>（日历 + 历史浏览）· <strong>记一笔</strong>（悬浮记录键，居中强调）· <strong>规律</strong>（AI 洞察与标签分析）</p>
+  </div>
+</section>
+
+<!-- 1 -->
+<section>
+  <h2><span class="no">贰</span>技术栈与存储</h2>
+  <table>
+    <tr><th>项</th><th>选型</th></tr>
+    <tr><td>平台</td><td>微信小程序</td></tr>
+    <tr><td>后端 / 存储</td><td><strong>微信云开发（CloudBase）</strong>，文档型数据库（类 MongoDB）</td></tr>
+    <tr><td>本地缓存</td><td><code>wx.setStorage</code> 仅作离线兜底，不当主存储</td></tr>
+    <tr><td>用户隔离</td><td>多用户。靠云开发每条文档自带的 <code>_openid</code> 天然隔离，数据库权限设为"仅创建者可读写"，查询自动只返回本人数据</td></tr>
+    <tr><td>AI 分析</td><td>调大模型 API。采用<strong>混合做法</strong>：云函数先用代码算统计（频次、共现），再把数字喂给模型生成自然语言洞察。省 token、结果准</td></tr>
+  </table>
+  <div class="note"><span class="t">关于导出</span>微信小程序无法直接下载文件到本地，CSV/JSON/Markdown 导出需用 <code>wx.saveFileToDisk</code> 存到「微信文件」，或生成后分享给自己。</div>
+</section>
+
+<!-- 2 -->
+<section>
+  <h2><span class="no">叁</span>标签体系（核心设计）</h2>
+  <p>标签不是简单的"打卡/数值"两类，而是 <strong>带参数的模板</strong>。标签 = 名称 + 0~多个参数字段，每个参数有自己的类型。这样"和A冲突""和B冲突"归在同一个「冲突」标签下，A/B 只是参数值——既能一键拉出"对所有人的冲突"，也能按某个人下钻。</p>
+
+  <table>
+    <tr><th>形态</th><th>例子</th><th>记录时交互</th></tr>
+    <tr><td>无参数（纯打卡）</td><td>失眠、早起、11点后睡</td><td>点一下即记</td></tr>
+    <tr><td>文本参数</td><td>冲突 → <code>对象=A</code></td><td>点亮后选/填"谁"</td></tr>
+    <tr><td>数值参数</td><td>运动 → <code>时长=30 分钟</code></td><td>点亮后<strong>就地直接输入</strong>数字</td></tr>
+    <tr><td>多参数</td><td>冲突 → <code>对象=A, 强度=3</code></td><td>填多个字段</td></tr>
+  </table>
+
+  <h3>文本参数 = 可记忆选项</h3>
+  <p>文本参数（如"冲突对象"）自带一个"记忆字典"：第一次填"A"会被记住，下次点该标签时"A"作为历史选项直接可选，也能新建别人。保证同一个人不写串（不会"A""老A"分散），这样 AI 和筛选才能准确按人聚合。</p>
+
+  <h3>标签规则（已定稿）</h3>
+  <ul>
+    <li><strong>不支持修改</strong>：名称、图标、参数定义建好即固定。（因此不存在"改名回写历史"的问题）</li>
+    <li><strong>可新增</strong>：随时建新标签；记录/编辑事件时也能当场新建并打上。</li>
+    <li><strong>删除有前提</strong>：只有<span class="em">没有任何片段引用</span>的标签能删；已被使用过的标签<strong>不能删，只能归档</strong>。删除前需先查 <code>fragments</code> 是否引用该 <code>tagId</code>，有则拦截并提示归档。</li>
+    <li><strong>归档</strong>：把标签 <code>archived</code> 置为 <code>true</code>。效果：记录页不再列出该标签；历史片段照常显示/筛选/统计；可一键取消归档恢复。删除是抹掉，归档是收进抽屉。</li>
+  </ul>
+
+  <h3>跨夜睡眠等场景</h3>
+  <p>不做任何特殊归属规则。用<strong>多个平级独立标签</strong>表达（如"11点后睡""7点前起""失眠"三个并列标签），需要时一起打；筛选时<strong>支持多选标签</strong>组合（如"晚睡 且 失眠"）。</p>
+</section>
+
+<!-- 3 -->
+<section>
+  <h2><span class="no">肆</span>事件（片段）模型</h2>
+  <p>放弃"一天一条日记"，改为 <strong>一天 N 条片段（fragment）</strong>。每条片段是独立记录，自带时间、心情、标签。当天视图把多笔按时间排成片段流。</p>
+  <ul>
+    <li><strong>时间默认只记日期</strong>，时刻字段可空。用户主动填了才存时刻。补记空白日时默认只有日期、不必选时刻。</li>
+    <li><strong>补记两种方式都要</strong>：① 记录页可把时间往前调，补昨晚忘记的；② 日历点过去的空白日，直接进去补记那天内容。</li>
+    <li><strong>已有事件可修改</strong>：改正文、心情、时间、增删该笔上的标签、改参数值；修改时也能新增标签。<code>updatedAt</code> 记最后修改时间。</li>
+    <li><strong>当天心情</strong>取当天所有片段心情的<strong>均值</strong>，用于日历色点与当天概览。</li>
+  </ul>
+</section>
+
+<!-- 4 -->
+<section>
+  <h2><span class="no">伍</span>数据库设计（云开发 · 文档型）</h2>
+  <p>共 3 个核心集合 + 1 个缓存集合。每条文档自带 <code>_id</code>、<code>_openid</code>（=user_id，做隔离用，无需另存）。</p>
+
+  <h3>① <code>tags</code> — 标签模板</h3>
+<pre><span class="c">// 标签建后不可改；params 为空即纯打卡标签</span>
+{
+  _id: <span class="s">"tag_xxx"</span>,
+  _openid: <span class="s">"用户openid"</span>,        <span class="c">// 多用户隔离</span>
+  name: <span class="s">"冲突"</span>,
+  icon: <span class="s">"⚡"</span>,
+  params: [                      <span class="c">// 0~多个参数定义</span>
+    {
+      key: <span class="s">"object"</span>,           <span class="c">// 参数标识</span>
+      label: <span class="s">"对象"</span>,           <span class="c">// 显示名</span>
+      type: <span class="s">"text"</span>,            <span class="c">// text | number</span>
+      unit: <span class="k">null</span>,               <span class="c">// number 时填，如 "分钟"</span>
+      required: <span class="k">true</span>,            <span class="c">// 必填 / 选填</span>
+      options: [<span class="s">"A"</span>,<span class="s">"B"</span>,<span class="s">"领导"</span>]  <span class="c">// text 参数记忆字典，新值自动追加</span>
+    }
+  ],
+  archived: <span class="k">false</span>,             <span class="c">// 归档（停用但留历史）</span>
+  sortOrder: <span class="n">1</span>,
+  createdAt: <span class="n">Date</span>
+}</pre>
+
+  <h3>② <code>fragments</code> — 日记片段（核心）</h3>
+<pre><span class="c">// 一天多笔，每笔一条；标签连同填入的参数值冗余进来，查片段不必回查 tags</span>
+{
+  _id: <span class="s">"frag_xxx"</span>,
+  _openid: <span class="s">"用户openid"</span>,
+  date: <span class="s">"2026-06-23"</span>,         <span class="c">// 只到天，必填</span>
+  time: <span class="s">"23:40"</span>,              <span class="c">// 可空！没填即 null</span>
+  datetime: <span class="n">Date</span>,             <span class="c">// 排序/范围查询用；无 time 时取当天 00:00</span>
+  mood: <span class="n">1</span>,                    <span class="c">// 1~5，可空</span>
+  content: <span class="s">"脑子停不下来…"</span>,     <span class="c">// 正文，可空</span>
+  tags: [                       <span class="c">// 这一笔打的标签（含参数值）</span>
+    {
+      tagId: <span class="s">"tag_xxx"</span>,
+      name: <span class="s">"冲突"</span>,            <span class="c">// 冗余，避免回查</span>
+      icon: <span class="s">"⚡"</span>,
+      values: { object: <span class="s">"A"</span> }   <span class="c">// 实际填入的参数值</span>
+    },
+    {
+      tagId: <span class="s">"tag_yyy"</span>,
+      name: <span class="s">"运动"</span>,
+      values: { duration: <span class="n">30</span> }
+    }
+  ],
+  createdAt: <span class="n">Date</span>,
+  updatedAt: <span class="n">Date</span>
+}</pre>
+  <div class="note"><span class="t">冗余说明</span>因标签不可改名，<code>tags[]</code> 里冗余 <code>name/icon/values</code> 不会产生不一致问题，查片段流时一次拿全。</div>
+
+  <h3>③ <code>insights</code> — AI 洞察缓存</h3>
+<pre><span class="c">// AI 调用有成本，按周期+筛选缓存，避免每次进页面重算</span>
+{
+  _id: <span class="s">"insight_xxx"</span>,
+  _openid: <span class="s">"用户openid"</span>,
+  period: <span class="s">"2026-06"</span>,         <span class="c">// 2026-W25 / 2026-06 / 2026-Q2</span>
+  scope: <span class="s">"month"</span>,           <span class="c">// week | month | quarter</span>
+  tagFilter: <span class="k">null</span>,           <span class="c">// null=综合；"tag_xxx"=某标签专属</span>
+  stats: { ... },              <span class="c">// 云函数算出的统计（频次/共现），留档</span>
+  cards: [
+    { type: <span class="s">"cooccur"</span>,
+      text: <span class="s">"晚睡的日子，心情往往更低…"</span>,
+      emphasis: [<span class="s">"晚睡"</span>,<span class="s">"2.3分"</span>] }
+  ],
+  generatedAt: <span class="n">Date</span>
+}</pre>
+
+  <h3>④ <code>tag_values</code> — 参数字典加速（暂不实现）</h3>
+  <p>文本参数的记忆选项已存在 <code>tags.params[].options</code> 里，够用。此集合预留给"跨标签统计某参数值（如 A 这个人总共出现多少次）"，<strong>先不建</strong>，需要再加。</p>
+
+  <h3>索引</h3>
+  <ul>
+    <li><code>fragments</code>：<code>date</code>、<code>datetime</code>（日历、时间范围查询）</li>
+    <li><code>tags</code>：<code>sortOrder</code>、<code>archived</code></li>
+    <li><code>insights</code>：<code>period + scope + tagFilter</code>（命中缓存）</li>
+  </ul>
+</section>
+
+<!-- 5 -->
+<section>
+  <h2><span class="no">陆</span>AI 规律分析</h2>
+  <ul>
+    <li><strong>混合实现</strong>：云函数先用代码算统计（频次、共现矩阵、各标签当天均心情），把结构化数字喂给大模型，模型只负责把数字写成自然语言洞察。</li>
+    <li><strong>关联口径以"天"为单位</strong>：同一天发生的事项即算关联，<span class="em">不计较先后顺序</span>（因时刻可空）。</li>
+    <li><strong>措辞只说共现、不下因果断言</strong>：说"晚睡的日子，心情往往更低"，不说"晚睡导致心情低"。这条要写进 prompt。</li>
+    <li>按 <strong>周 / 月 / 季</strong> 出洞察；每条洞察带<strong>具体数字佐证</strong>。</li>
+    <li>支持<strong>标签专属洞察</strong>：针对单个标签生成它的规律（出现频次、趋势、与其他标签的共现、当天均心情）。</li>
+  </ul>
+</section>
+
+<!-- 6 -->
+<section>
+  <h2><span class="no">柒</span>按标签筛选 & 导出</h2>
+  <h3>按标签筛选（两层下钻）</h3>
+  <ul>
+    <li>先选标签（如"冲突"），<strong>支持多选组合</strong>（"晚睡 且 失眠"）。</li>
+    <li>带参数的标签可再按<strong>参数值下钻</strong>：全部 / 只看对象=A / 只看对象=B。这就是"拉出对所有人的冲突，或单看某人"。</li>
+    <li>筛选结果页 = 该标签的详情：发生次数、环比趋势、当天均心情、AI 针对该标签的规律、逐次记录列表。</li>
+  </ul>
+  <h3>导出</h3>
+  <table>
+    <tr><th>格式</th><th>用途</th></tr>
+    <tr><td>CSV</td><td>每行一条标签记录，拉进 Excel 或喂给其他工具。首行 <code>date,time,tag,param,value,mood</code></td></tr>
+    <tr><td>JSON</td><td>含日记原文的完整备份，可迁移 / 再导入</td></tr>
+    <tr><td>Markdown</td><td>按天整理的可读文本，适合存档（可选，优先级低）</td></tr>
+  </table>
+  <p>导出可选范围：本月 / 近三月 / 全部。</p>
+</section>
+
+<!-- 7 UI -->
+<section>
+  <h2><span class="no">捌</span>界面设计</h2>
+  <p>视觉基调：<strong>宣纸 + 淡墨 + 一点朱砂印章</strong>，克制、安静，不走糖果色 App 的路子。色板：纸 <code>#F2EFE8</code>、墨 <code>#2B2925</code>、次要 <code>#8C857A</code>、细线 <code>#DAD4C8</code>、朱砂强调 <code>#A4543B</code>（只用于印章、AI 标签条、负向数据）、正向信号青 <code>#6E7A66</code>。字体偏宋体衬线，传达日记的"留笔"感。</p>
+
+  <div class="screens">
+    <!-- HOME -->
+    <div class="fw">
+      <div class="phone">
+        <div class="sb"><span>9:41</span><span>100%</span></div>
+        <div class="scn">
+          <div class="ptop"><div class="smark">记</div><div><h1>今天过得怎样</h1><div class="s">六月二十四日 · 周三</div></div></div>
+          <div class="mcal">
+            <div class="mw"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+            <div class="md" id="md1"></div>
+          </div>
+          <div class="hr"></div>
+          <div class="pbody">
+            <div class="pbl">近 期</div>
+            <div class="pentry"><div class="mt"><span>6月23日 周二</span><span>🌥</span></div>
+              <div class="bd">和组里对齐 KPI 又绕来绕去，晚上脑子停不下来。</div>
+              <div class="tr"><span class="pchip w">11点后睡</span><span class="pchip w">失眠</span><span class="pchip">读书40min</span></div></div>
+            <div class="pentry"><div class="mt"><span>6月22日 周一</span><span>🌤</span></div>
+              <div class="bd">早起跑了步，整个人清爽。</div>
+              <div class="tr"><span class="pchip">7点前起</span><span class="pchip">运动30min</span></div></div>
+          </div>
+        </div>
+        <div class="ptab"><div class="t on"><span class="i">☷</span>时光</div><div class="t ctr"><span class="i">✎</span></div><div class="t"><span class="i">◷</span>规律</div></div>
+      </div>
+      <div class="fl">时光 · 日历足迹，每天一个心情色点，点某天看/补记</div>
+    </div>
+
+    <!-- RECORD with param input -->
+    <div class="fw">
+      <div class="phone">
+        <div class="sb"><span>9:41</span><span>100%</span></div>
+        <div class="scn">
+          <div class="ptop"><div class="smark">记</div><div><h1>记一笔</h1><div class="s">6月24日</div></div></div>
+          <div class="pbody">
+            <div class="pbl">时 间</div>
+            <span class="pchip" style="padding:5px 10px">🕘 今天（未填时刻 · 可点选）</span>
+            <div class="pbl">心 情</div>
+            <div class="mp"><b>😔</b><b>😕</b><b class="on">😐</b><b>🙂</b><b>😌</b></div>
+            <div class="pbl">发 生 了 什 么</div>
+            <div class="pta">和 A 在方案上顶了两句…</div>
+            <div class="pbl">常 见 事 项</div>
+            <div class="ppick">
+              <span class="ptb">🌙 11点后睡</span>
+              <span class="ptb on">⚡ 冲突 · 对象<span class="pinp">A ▾</span></span>
+              <span class="ptb seal on">🏃 运动<span class="pinp"><input value="30">分</span></span>
+              <span class="ptb">😵 失眠</span>
+              <span class="ptb" style="border-style:dashed;color:var(--muted)">＋ 自定义</span>
+            </div>
+          </div>
+        </div>
+        <div class="ptab"><div class="t"><span class="i">☷</span>时光</div><div class="t ctr on"><span class="i">✎</span></div><div class="t"><span class="i">◷</span>规律</div></div>
+      </div>
+      <div class="fl">记一笔 · 时刻选填；文本参数（对象=A）就地选，数值参数（运动）就地输入</div>
+    </div>
+
+    <!-- DAY STREAM -->
+    <div class="fw">
+      <div class="phone">
+        <div class="sb"><span>9:41</span><span>100%</span></div>
+        <div class="scn">
+          <div class="ptop"><div class="smark">记</div><div><h1>6月23日</h1><div class="s">周二 · 共 3 笔 · 均值🌥2.7</div></div></div>
+          <div class="hr"></div>
+          <div class="pbody">
+            <div class="strm">
+              <div class="frg"><div class="tm">🙂 08:10 · 早</div><div class="tx">早起跑了步，难得清爽。</div><div class="tg"><span class="pchip">7点前起</span><span class="pchip">运动30min</span></div></div>
+              <div class="frg"><div class="tm">😕 16:30 · 下午</div><div class="tx">和 A 在方案上顶了两句。</div><div class="tg"><span class="pchip w">冲突·A</span></div></div>
+              <div class="frg"><div class="tm">😔 23:40 · 晚</div><div class="tx">脑子停不下来，翻来覆去。</div><div class="tg"><span class="pchip w">11点后睡</span><span class="pchip w">失眠</span></div></div>
+            </div>
+            <div style="border:1px dashed var(--line);border-radius:9px;padding:8px;text-align:center;font-size:9px;color:var(--muted);margin-top:4px;">＋ 此刻再记一笔</div>
+          </div>
+        </div>
+        <div class="ptab"><div class="t on"><span class="i">☷</span>时光</div><div class="t ctr"><span class="i">✎</span></div><div class="t"><span class="i">◷</span>规律</div></div>
+      </div>
+      <div class="fl">当天视图 · 一天多笔按时间排成片段流，底部随时追加</div>
+    </div>
+
+    <!-- INSIGHT -->
+    <div class="fw">
+      <div class="phone">
+        <div class="sb"><span>9:41</span><span>100%</span></div>
+        <div class="scn">
+          <div class="ptop"><div class="smark">记</div><div><h1>规律</h1><div class="s">基于这段时间的记录</div></div></div>
+          <div class="pbody">
+            <div class="seg" style="margin-bottom:8px"><b>本周</b><b class="on">本月</b><b>近三月</b></div>
+            <div class="pins"><span class="ai">AI · 共现发现</span><div class="hd">晚睡那天，心情往往更低</div><div class="ds">本月<span class="e">11点后睡</span>的 9 天，当天均心情<span class="e">2.3</span>；早睡 3.8。</div></div>
+            <div class="pins"><span class="ai">AI · 模式</span><div class="hd">「冲突·A」常与失眠同现</div><div class="ds">和 A 的 4 次冲突里<span class="e">3 次</span>当天失眠，多在<span class="e">周一二</span>。</div></div>
+            <div class="pins calm"><span class="ai">AI · 正向</span><div class="hd">运动的日子，你睡得着</div><div class="ds">有运动的 7 天，仅<span class="e">1 天</span>失眠。</div></div>
+          </div>
+        </div>
+        <div class="ptab"><div class="t"><span class="i">☷</span>时光</div><div class="t ctr"><span class="i">✎</span></div><div class="t on"><span class="i">◷</span>规律</div></div>
+      </div>
+      <div class="fl">规律 · AI 洞察，只说共现不下因果，每条带数字佐证</div>
+    </div>
+
+    <!-- TAG FILTER -->
+    <div class="fw">
+      <div class="phone">
+        <div class="sb"><span>9:41</span><span>100%</span></div>
+        <div class="scn">
+          <div class="ptop"><div class="smark">记</div><div><h1>按标签看</h1><div class="s">支持多选 + 参数下钻</div></div></div>
+          <div class="pbody">
+            <div class="pfilt"><span class="f">全部</span><span class="f on">冲突</span><span class="f">失眠</span><span class="f">11点后睡</span><span class="f">运动</span></div>
+            <div style="font-size:9px;color:var(--muted);margin-bottom:6px;">对象：<span class="pchip on">全部</span> <span class="pchip">A</span> <span class="pchip">B</span> <span class="pchip">领导</span></div>
+            <div class="mstat"><div class="b"><div class="n">12</div><div class="l">发生次数</div></div><div class="b"><div class="n">↑</div><div class="l">较上月</div></div><div class="b"><div class="n">2.1</div><div class="l">当天均心情</div></div></div>
+            <div class="pins"><span class="ai">AI · 这个标签的规律</span><div class="ds">「冲突」最常发生在<span class="e">周一二</span>；对象为<span class="e">A</span> 时当天心情最低；多与<span class="e">失眠</span>同现。</div></div>
+          </div>
+        </div>
+        <div class="ptab"><div class="t"><span class="i">☷</span>时光</div><div class="t ctr"><span class="i">✎</span></div><div class="t on"><span class="i">◷</span>规律</div></div>
+      </div>
+      <div class="fl">标签筛选 · 选「冲突」再按对象（全部/A/B）下钻，每个标签一个详情页</div>
+    </div>
+
+    <!-- CREATE TAG -->
+    <div class="fw">
+      <div class="phone">
+        <div class="sb"><span>9:41</span><span>100%</span></div>
+        <div class="scn">
+          <div class="ptop"><div class="smark">记</div><div><h1>新建标签</h1><div class="s">建后不可改</div></div></div>
+          <div class="frm">
+            <div class="fld"><div class="fl2">名 称</div><div class="inp">冲突</div></div>
+            <div class="fld"><div class="fl2">图 标</div><div class="inp">⚡</div></div>
+            <div class="fld"><div class="fl2">参 数（可选 · 可加多个）</div>
+              <div class="inp" style="margin-bottom:5px">对象 · <b>文本</b> · 必填 · 记忆选项</div>
+              <div class="inp" style="border-style:dashed;color:var(--muted)">＋ 加一个参数</div>
+            </div>
+            <div class="fld"><div class="fl2">参数类型（加参数时选）</div>
+              <div class="seg"><b class="on">文本</b><b>数值</b></div>
+            </div>
+            <div class="pbtn">建 立 标 签</div>
+          </div>
+        </div>
+        <div class="ptab"><div class="t"><span class="i">☷</span>时光</div><div class="t ctr"><span class="i">✎</span></div><div class="t on"><span class="i">◷</span>规律</div></div>
+      </div>
+      <div class="fl">建标签 · 名称+图标+参数（文本/数值，必填/选填，单位）；建后锁定</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section>
+  <h2><span class="no">玖</span>功能清单（状态）</h2>
+  <table>
+    <tr><th>功能</th><th>说明</th><th>状态</th></tr>
+    <tr><td>多片段日记</td><td>一天 N 笔，各带时间/心情/标签，当天排成片段流</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>心情评分</td><td>1~5 表情，可空</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>参数化标签</td><td>名称+图标+参数（文本/数值），文本参数带记忆字典</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>标签新增 / 不可改 / 归档 / 受限删除</td><td>有历史只能归档，无历史可删</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>补记</td><td>改时间补 + 日历空白日补，时刻选填</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>事件可修改</td><td>改正文/心情/时间/标签/参数值，可当场加标签</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>AI 规律分析</td><td>混合实现，按周/月/季，只说共现，带数字</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>按标签筛选</td><td>多选组合 + 参数值下钻 + 标签详情页</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>导出</td><td>CSV / JSON / Markdown，可选范围</td><td><span class="tag done">已定</span></td></tr>
+    <tr><td>提醒推送 · 密码锁 · 图片附件 · 云同步</td><td>暂未纳入，后续可加</td><td><span class="tag todo">待定</span></td></tr>
+  </table>
+</section>
+
+<!-- 9 -->
+<section>
+  <h2><span class="no">拾</span>留给实现者的提示</h2>
+  <ul>
+    <li>建标签是"建后锁定"，UI 上要对修改入口做禁用 + 说明，避免用户期待落空。</li>
+    <li>删除标签前必做引用校验（查 <code>fragments.tags.tagId</code>），有引用就引导归档。</li>
+    <li>导出受微信小程序文件能力限制，走 <code>wx.saveFileToDisk</code> 或分享流。</li>
+    <li>AI 洞察务必先缓存（<code>insights</code> 集合），按 <code>period+scope+tagFilter</code> 命中，不每次重算。</li>
+    <li>AI prompt 需显式约束：以"天"为关联单位、只描述共现、禁止因果断言、每条结论附数字。</li>
+    <li>视觉令牌（色板/字体）见第捌节，保持克制安静的基调。</li>
+  </ul>
+  <div class="note ok"><span class="t">一处待你最终确认</span>有历史的标签删除策略，本文档按"不可删、只能归档"撰写。若希望支持强删（连带清历史引用），请告知后修订。</div>
+</section>
+
+<div class="foot">日记本小程序 · 产品与技术规格 v1.0 · 供 Claude Code 实现</div>
+
+</div>
+
+<script>
+  const md1=document.getElementById('md1');
+  const moods={3:4,5:3,9:2,12:1,16:4,19:5,22:4,23:2};
+  for(let i=0;i<2;i++){const d=document.createElement('div');d.className='d out';d.textContent=30+i;md1.appendChild(d);}
+  for(let n=1;n<=30;n++){const d=document.createElement('div');d.className='d';if(n===24)d.classList.add('today');
+    d.innerHTML='<span>'+n+'</span>';
+    if(moods[n]){const dot=document.createElement('div');dot.className='dot';
+      dot.style.background=['','#c97a66','#cfa06b','#c9c19a','#9aae8a','#6E7A66'][moods[n]];d.appendChild(dot);}
+    md1.appendChild(d);}
+</script>
+</body>
+</html>

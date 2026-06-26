@@ -1,0 +1,23 @@
+<view class="page">
+  <nav-bar title="标签管理" subtitle="建后不可修改" showBack="{{true}}" showHome="{{false}}" />
+
+  <view class="container">
+    <view wx:for="{{tags}}" wx:key="_id" class="tag-item">
+      <view class="tag-info">
+        <text class="tag-icon">{{item.icon}}</text>
+        <view class="tag-detail">
+          <text class="tag-name">{{item.name}}</text>
+          <text wx:if="{{item.params.length > 0}}" class="tag-params">
+            参数：{{item.params.length}}个
+          </text>
+        </view>
+      </view>
+      <view class="tag-actions">
+        <text class="delete-btn" bindtap="deleteTag"
+          data-id="{{item._id}}" data-name="{{item.name}}">删除</text>
+      </view>
+    </view>
+
+    <view class="add-btn" bindtap="goCreate">+ 新建标签</view>
+  </view>
+</view>

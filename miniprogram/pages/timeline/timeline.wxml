@@ -1,0 +1,52 @@
+<view class="page safe-bottom">
+  <nav-bar title="今天过得怎样" subtitle="{{todayText}}" showBack="{{false}}" showHome="{{false}}" />
+
+  <!-- Calendar -->
+  <view class="calendar">
+    <view class="cal-header">
+      <text class="cal-arrow" bindtap="prevMonth">‹</text>
+      <text class="cal-title">{{monthText}}</text>
+      <text class="cal-arrow" bindtap="nextMonth">›</text>
+    </view>
+    <view class="cal-weekdays">
+      <text wx:for="{{weekdays}}" wx:key="*this" class="cal-wd">{{item}}</text>
+    </view>
+    <view class="cal-grid">
+      <view wx:for="{{calendarDays}}" wx:key="index"
+        class="cal-day {{item.current ? '' : 'out'}} {{item.date === today ? 'today' : ''}}"
+        bindtap="tapDay" data-date="{{item.date}}">
+        <text class="cal-day-num">{{item.day}}</text>
+        <view wx:if="{{item.moodColor}}" class="cal-dot" style="background: {{item.moodColor}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="divider"></view>
+
+  <!-- Recent entries -->
+  <view class="container">
+    <view class="section-label">近 期</view>
+
+    <block wx:if="{{recentFragments.length === 0 && !loading}}">
+      <view class="empty-hint">还没有记录，点击中间按钮开始记一笔</view>
+    </block>
+
+    <view wx:for="{{recentFragments}}" wx:key="date" class="card"
+      bindtap="tapEntry" data-date="{{item.date}}">
+      <view class="entry-header">
+        <text class="entry-date">{{item.dateText}}</text>
+        <text class="entry-mood">{{item.moodEmoji}}</text>
+      </view>
+      <block wx:for="{{item.fragments}}" wx:for-item="frag" wx:key="_id">
+        <view wx:if="{{index > 0}}" class="frag-divider"></view>
+        <view class="entry-body" wx:if="{{frag.content}}">{{frag.content}}</view>
+        <view class="entry-tags" wx:if="{{frag.tags.length > 0}}">
+          <text wx:for="{{frag.tags}}" wx:for-item="tag" wx:key="tagId"
+            class="chip {{tag.values && tag.values.object ? 'warn' : ''}}">
+            {{tag.icon}} {{tag.name}}{{tag.values.duration ? tag.values.duration + '分' : ''}}{{tag.values.object ? '·' + tag.values.object : ''}}
+          </text>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

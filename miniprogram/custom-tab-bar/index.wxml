@@ -1,0 +1,18 @@
+<view class="tab-bar">
+  <!-- 时光 -->
+  <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">
+    <text class="tab-text">时光</text>
+  </view>
+
+  <!-- 记一笔 (center button) -->
+  <view class="tab-item center" bindtap="goRecord">
+    <view class="center-btn">
+      <text class="center-icon">✎</text>
+    </view>
+  </view>
+
+  <!-- 我的 -->
+  <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">
+    <text class="tab-text">我的</text>
+  </view>
+</view>

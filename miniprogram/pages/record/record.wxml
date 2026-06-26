@@ -1,0 +1,97 @@
+<view class="page">
+  <nav-bar title="{{editMode ? '编辑' : '记一笔'}}" subtitle="{{dateText}}" showBack="{{true}}" showHome="{{false}}" />
+
+  <view class="container">
+    <!-- Date & Time -->
+    <view class="section-label">时 间</view>
+    <view class="time-row">
+      <picker mode="date" value="{{date}}" bindchange="onDateChange">
+        <view class="chip" style="padding: 12rpx 24rpx;">{{date}}</view>
+      </picker>
+      <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+        <view class="chip" style="padding: 12rpx 24rpx;">
+          {{hasTime ? time : '选择时间（可选）'}}
+        </view>
+      </picker>
+      <text wx:if="{{hasTime}}" class="clear-time" bindtap="clearTime">x</text>
+    </view>
+
+    <!-- Mood -->
+    <view class="section-label">心 情</view>
+    <view class="mood-row">
+      <view wx:for="{{moodEmojis}}" wx:key="index"
+        class="mood-btn {{mood === index + 1 ? 'active' : ''}}"
+        bindtap="selectMood" data-mood="{{index + 1}}">
+        <text class="mood-emoji">{{item}}</text>
+        <text class="mood-label">{{moodLabels[index]}}</text>
+      </view>
+    </view>
+
+    <!-- Tags -->
+    <view class="section-label">常 见 事 项</view>
+    <view class="tag-list">
+      <view wx:for="{{tags}}" wx:key="_id"
+        class="tag-btn {{selectedTagMap[item._id] ? 'active' : ''}}"
+        bindtap="toggleTag" data-id="{{item._id}}">
+        <text>{{item.icon}} {{item.name}}</text>
+      </view>
+      <view class="tag-btn add-tag" bindtap="goCreateTag">
+        <text>+ 自定义</text>
+      </view>
+    </view>
+
+    <!-- Selected tag params -->
+    <block wx:for="{{selectedTags}}" wx:key="tagId" wx:for-item="st">
+      <block wx:for="{{tags}}" wx:for-item="tagDef" wx:key="_id">
+        <block wx:if="{{tagDef._id === st.tagId && tagDef.params.length > 0}}">
+          <view class="param-section">
+            <text class="param-tag-name">{{tagDef.icon}} {{tagDef.name}}</text>
+            <block wx:for="{{tagDef.params}}" wx:for-item="param" wx:key="key">
+              <view class="param-row">
+                <text class="param-label">{{param.label}}{{param.required ? '*' : ''}}</text>
+                <!-- Text param with options -->
+                <block wx:if="{{param.type === 'text'}}">
+                  <view class="param-options" wx:if="{{param.options.length > 0}}">
+                    <view wx:for="{{param.options}}" wx:for-item="opt" wx:key="*this"
+                      class="chip {{st.values[param.key] === opt ? 'active' : ''}}"
+                      bindtap="selectOption"
+                      data-tagid="{{st.tagId}}" data-key="{{param.key}}" data-option="{{opt}}">
+                      {{opt}}
+                    </view>
+                  </view>
+                  <input class="param-input" placeholder="输入{{param.label}}"
+                    value="{{st.values[param.key] || ''}}"
+                    data-tagid="{{st.tagId}}" data-key="{{param.key}}"
+                    bindinput="onParamInput" />
+                </block>
+                <!-- Number param -->
+                <block wx:if="{{param.type === 'number'}}">
+                  <view class="param-number-row">
+                    <input class="param-input number" type="digit"
+                      placeholder="0" value="{{st.values[param.key] || ''}}"
+                      data-tagid="{{st.tagId}}" data-key="{{param.key}}"
+                      bindinput="onParamNumberInput" />
+                    <text class="param-unit" wx:if="{{param.unit}}">{{param.unit}}</text>
+                  </view>
+                </block>
+              </view>
+            </block>
+          </view>
+        </block>
+      </block>
+    </block>
+
+    <!-- Content -->
+    <view class="section-label">发 生 了 什 么</view>
+    <view class="content-wrap">
+      <textarea class="content-input" placeholder="写点什么..." maxlength="{{maxLen}}"
+        value="{{content}}" bindinput="onContentInput" auto-height></textarea>
+      <text class="content-count">{{contentLen}}/{{maxLen}}</text>
+    </view>
+
+    <!-- Save button -->
+    <view class="save-area">
+      <button class="btn-primary" bindtap="save">{{editMode ? '保 存 修 改' : '记 下 来'}}</button>
+    </view>
+  </view>
+</view>

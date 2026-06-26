@@ -1,0 +1,39 @@
+<view class="page">
+  <nav-bar title="{{dateText}}" subtitle="{{daySubtitle}}" showBack="{{true}}" showHome="{{true}}" />
+
+  <view class="divider"></view>
+
+  <view class="container">
+    <!-- Empty state -->
+    <view wx:if="{{fragments.length === 0 && !loading}}" class="empty-state">
+      <text class="empty-text">这一天还没有记录</text>
+      <view class="empty-action" bindtap="addRecord">记下些什么</view>
+    </view>
+
+    <!-- Fragment stream -->
+    <view wx:if="{{fragments.length > 0}}" class="stream">
+      <view class="stream-line"></view>
+      <view wx:for="{{fragments}}" wx:key="_id" class="fragment"
+        bindtap="tapFragment" data-id="{{item._id}}">
+        <view wx:if="{{index > 0}}" class="frag-divider"></view>
+        <view class="frag-header">
+          <view class="frag-meta">
+            <text wx:if="{{item.moodEmoji}}">{{item.moodEmoji}} </text>
+            <text wx:if="{{item.timeText}}">{{item.timeText}}</text>
+          </view>
+          <text class="frag-delete" catchtap="deleteFrag" data-id="{{item._id}}">删除</text>
+        </view>
+        <view wx:if="{{item.content}}" class="frag-content">{{item.content}}</view>
+        <view wx:if="{{item.tags.length > 0}}" class="frag-tags">
+          <text wx:for="{{item.tags}}" wx:for-item="tag" wx:key="tagId"
+            class="chip {{tag.values && tag.values.object ? 'warn' : ''}}">
+            {{tag.icon}} {{tag.name}}{{tag.values.duration ? tag.values.duration + '分' : ''}}{{tag.values.object ? '·' + tag.values.object : ''}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Add more -->
+    <view class="add-more" bindtap="addRecord">+ 再记一笔</view>
+  </view>
+</view>

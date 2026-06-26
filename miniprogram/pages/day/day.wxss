@@ -1,0 +1,107 @@
+.page {
+  min-height: 100vh;
+  padding-bottom: 60rpx;
+}
+
+/* Fragment stream */
+.stream {
+  position: relative;
+  padding-left: 32rpx;
+  margin-top: 24rpx;
+}
+
+.stream-line {
+  position: absolute;
+  left: 38rpx;
+  top: 12rpx;
+  bottom: 12rpx;
+  width: 2rpx;
+  background: var(--line);
+}
+
+.fragment {
+  position: relative;
+  margin-bottom: 32rpx;
+  padding-left: 24rpx;
+}
+
+.frag-dot {
+  position: absolute;
+  left: -7rpx;
+  top: 8rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3rpx solid var(--muted);
+}
+
+.frag-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.frag-meta {
+  font-size: 22rpx;
+  color: var(--muted);
+}
+
+.frag-delete {
+  font-size: 22rpx;
+  color: var(--muted);
+  padding: 4rpx 12rpx;
+}
+
+.frag-divider {
+  height: 1rpx;
+  background: var(--line);
+  margin-bottom: 24rpx;
+}
+
+.frag-content {
+  font-size: 28rpx;
+  line-height: 1.6;
+  margin-bottom: 12rpx;
+  word-break: break-all;
+}
+
+.frag-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 80rpx 0;
+}
+
+.empty-text {
+  color: var(--muted);
+  font-size: 28rpx;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.empty-action {
+  display: inline-block;
+  padding: 16rpx 40rpx;
+  border: 2rpx dashed var(--line);
+  border-radius: 16rpx;
+  color: var(--muted);
+  font-size: 26rpx;
+}
+
+/* Add more */
+.add-more {
+  border: 2rpx dashed var(--line);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--muted);
+  margin-top: 16rpx;
+}

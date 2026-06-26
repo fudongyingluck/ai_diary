@@ -1,0 +1,130 @@
+page {
+  --paper: #F2EFE8;
+  --ink: #2B2925;
+  --muted: #8C857A;
+  --line: #DAD4C8;
+  --seal: #A4543B;
+  --sage: #6E7A66;
+  --card: #FBF9F4;
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, "PingFang SC", system-ui, sans-serif;
+  line-height: 1.6;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  page {
+    --paper: #1C1A17;
+    --ink: #E8E3D8;
+    --muted: #8A857A;
+    --line: #3A362F;
+    --seal: #C97A66;
+    --sage: #8AAE7A;
+    --card: #2B2925;
+  }
+}
+
+/* Common styles */
+.container {
+  padding: 0 32rpx;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx 32rpx 24rpx;
+}
+
+.page-header .logo {
+  width: 56rpx;
+  height: 56rpx;
+  background: var(--seal);
+  color: #fff;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-family: "Songti SC", serif;
+  transform: rotate(-3deg);
+  flex-shrink: 0;
+}
+
+.page-header .title {
+  font-size: 36rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.page-header .subtitle {
+  font-size: 24rpx;
+  color: var(--muted);
+  margin-top: 4rpx;
+}
+
+.section-label {
+  font-size: 22rpx;
+  color: var(--muted);
+  letter-spacing: 4rpx;
+  margin: 24rpx 0 16rpx;
+}
+
+.divider {
+  height: 1rpx;
+  background: var(--line);
+  margin: 0 32rpx;
+}
+
+.card {
+  background: var(--card);
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 28rpx;
+  background: var(--paper);
+  color: var(--muted);
+  border: 1rpx solid var(--line);
+}
+
+.chip.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.chip.warn {
+  background: #F1E2DC;
+  color: #9d5340;
+  border-color: #e3c8bf;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+  border-radius: 36rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  letter-spacing: 4rpx;
+  border: none;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.safe-bottom {
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}

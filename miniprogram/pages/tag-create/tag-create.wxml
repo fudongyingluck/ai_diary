@@ -1,0 +1,61 @@
+<view class="page">
+  <nav-bar title="新建标签" subtitle="建后不可修改" showBack="{{true}}" showHome="{{false}}" />
+
+  <view class="container">
+    <!-- Name -->
+    <view class="section-label">名 称</view>
+    <input class="form-input" placeholder="如：冲突、运动" value="{{name}}" bindinput="onInputName" />
+
+    <!-- Icon -->
+    <view class="section-label">图 标（可选）</view>
+    <view class="icon-picker">
+      <view wx:for="{{presetIcons}}" wx:key="*this"
+        class="icon-option {{icon === item ? 'active' : ''}}"
+        bindtap="pickIcon" data-icon="{{item}}">{{item}}</view>
+    </view>
+    <input class="form-input" placeholder="或手动输入 emoji" value="{{icon}}" bindinput="onInputIcon" maxlength="2" />
+
+    <!-- Params -->
+    <view class="section-label">参 数（可选）</view>
+
+    <view wx:for="{{params}}" wx:key="key" class="param-item">
+      <view class="param-item-info">
+        <text>{{item.label}} · {{item.type === 'text' ? '文本' : '数值'}}{{item.unit ? ' · ' + item.unit : ''}}{{item.required ? ' · 必填' : ''}}</text>
+      </view>
+      <text class="param-remove" bindtap="removeParam" data-index="{{index}}">x</text>
+    </view>
+
+    <!-- Add param form -->
+    <view wx:if="{{showAddParam}}" class="add-param-form">
+      <view class="form-row">
+        <text class="form-label">参数名称</text>
+        <input class="form-input small" placeholder="如：对象、时长" value="{{newParamLabel}}" bindinput="onParamLabel" />
+      </view>
+      <view class="form-row">
+        <text class="form-label">类型</text>
+        <picker mode="selector" range="{{['文本', '数值']}}" bindchange="onParamType">
+          <view class="form-input small">{{newParamType === 'text' ? '文本' : '数值'}}</view>
+        </picker>
+      </view>
+      <view wx:if="{{newParamType === 'number'}}" class="form-row">
+        <text class="form-label">单位</text>
+        <input class="form-input small" placeholder="如：分钟" value="{{newParamUnit}}" bindinput="onParamUnit" />
+      </view>
+      <view class="form-row" bindtap="toggleRequired">
+        <text class="form-label">必填</text>
+        <text>{{newParamRequired ? '是' : '否'}}</text>
+      </view>
+      <view class="param-actions">
+        <text class="param-action-btn" bindtap="addParam">确认添加</text>
+        <text class="param-action-cancel" bindtap="toggleAddParam">取消</text>
+      </view>
+    </view>
+
+    <view wx:if="{{!showAddParam}}" class="add-param-btn" bindtap="toggleAddParam">+ 添加参数</view>
+
+    <!-- Save -->
+    <view class="save-area">
+      <button class="btn-primary" bindtap="save">建 立 标 签</button>
+    </view>
+  </view>
+</view>

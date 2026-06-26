@@ -1,0 +1,34 @@
+<view class="nav-wrap">
+  <!-- Status bar placeholder -->
+  <view style="height: {{statusBarHeight}}px"></view>
+
+  <!-- Nav bar content -->
+  <view class="nav-bar" style="height: {{navBarHeight}}px">
+    <!-- Left: back/home capsule, aligned with right capsule -->
+    <view wx:if="{{showBack || showHome}}" class="nav-capsule"
+      style="top: {{capsuleTop}}px; height: {{capsuleHeight}}px; width: {{showBack && showHome ? capsuleWidth : btnWidth}}px;">
+      <view wx:if="{{showBack}}" class="nav-capsule-btn" bindtap="onBack">
+        <view class="arrow-left"></view>
+      </view>
+      <view wx:if="{{showBack && showHome}}" class="nav-capsule-divider"></view>
+      <view wx:if="{{showHome}}" class="nav-capsule-btn" bindtap="onHome">
+        <view class="home-icon">
+          <view class="home-roof"></view>
+          <view class="home-body"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Center: title -->
+    <view class="nav-title-area">
+      <view wx:if="{{showLogo}}" class="nav-logo">记</view>
+      <view class="nav-title-wrap">
+        <text class="nav-title">{{title}}</text>
+        <text wx:if="{{subtitle}}" class="nav-subtitle">{{subtitle}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- Placeholder to push content below fixed nav -->
+<view style="height: {{statusBarHeight + navBarHeight}}px"></view>

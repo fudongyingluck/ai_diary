@@ -1,0 +1,42 @@
+<view class="page safe-bottom">
+  <nav-bar title="我的" subtitle="管理与设置" showBack="{{false}}" showHome="{{false}}" />
+
+  <!-- Stats -->
+  <view class="container">
+    <view class="stats-row">
+      <view class="stat-card">
+        <text class="stat-num">{{fragCount}}</text>
+        <text class="stat-label">记录总数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num">{{tagCount}}</text>
+        <text class="stat-label">标签数</text>
+      </view>
+    </view>
+
+    <!-- Menu items -->
+    <view class="section-label">管 理</view>
+    <view class="menu-item" bindtap="goTagManage">
+      <text>标签管理</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="section-label">导 出</view>
+    <view class="menu-item" bindtap="exportJSON">
+      <text>导出 JSON（完整备份）</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="exportCSV">
+      <text>导出 CSV（表格格式）</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="section-label">关 于</view>
+    <view class="about-text">
+      日记本小程序 v1.0
+    </view>
+    <view class="about-text muted">
+      深色模式跟随系统自动切换
+    </view>
+  </view>
+</view>
